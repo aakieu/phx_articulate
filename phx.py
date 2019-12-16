@@ -85,6 +85,18 @@ def set_wrist(deg):
     wrist.set_position(pos)
 
 
+def set_gripper(pos):
+    gripper.set_position(pos)
+
+
+def close_gripper():
+    gripper.set_position(0)
+
+
+def open_gripper():
+    gripper.set_position(512)
+
+
 def set_angle(self, input_deg):
     """ Sets motor to specified input angle """
     dxl_goal_position = int(map_val(
@@ -155,7 +167,7 @@ def go_to_sleep():
     shoulder1.set_moving_speed(15)
     shoulder2.set_moving_speed(15)
     set_wsew([waist_deg, shoulder_deg, elbow_deg, wrist_deg])
-    time.sleep(3)
+    time.sleep(10)
 
     all_motors.disable_torque()
 

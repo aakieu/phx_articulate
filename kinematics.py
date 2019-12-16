@@ -4,7 +4,7 @@ from rbx_toolkit import rbx_toolkit as rbx
 import time
 
 # Link Lengths
-a1 = 8.7
+a1 = 9
 a2 = 15
 a3 = 15
 a4 = 9

@@ -7,7 +7,7 @@ class Ax12:
     """ Class for Dynamixel AX12A motors."""
     PROTOCOL_VERSION = 1.0
     BAUDRATE = 1000000             # Dynamixel default baudrate
-    DEVICENAME = 'COM3'            # Default COM Port
+    DEVICENAME = '/dev/ttyUSB0'           # Default COM Port
     portHandler = PortHandler(DEVICENAME)   # Initialize Ax12.PortHandler instance
     packetHandler = PacketHandler(PROTOCOL_VERSION)  # Initialize Ax12.PacketHandler instance
     # Dynamixel will rotate between this value
