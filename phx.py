@@ -120,6 +120,8 @@ def wait_for_completion():
         pass
     while gripper.is_moving():
         pass
+    while wrist.is_moving():
+        pass
 
 
 def set_wse(joint_angles):
@@ -159,7 +161,7 @@ def connect():
     Ax12.set_baudrate()
     init_motor_angles()
     # set speed
-    all_motors.set_moving_speed(50)
+    all_motors.set_moving_speed(75)
 
 
 def go_to_sleep():

@@ -47,12 +47,3 @@ phx.open_gripper()
 
 
 
-
-
-
-
-
-
-
-
-
