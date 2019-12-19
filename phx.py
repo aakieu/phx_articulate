@@ -13,7 +13,7 @@ gripper = Ax12(7)
 
 
 def map_val(x_in, x_min, x_max, y_min, y_max):
-    """ returns motor position value between 0-1023 """
+    """Linearly maps x to y; returns corresponding y value"""
     m = ((y_max - y_min) / (x_max - x_min))
     y_out = m * (x_in - x_min) + y_min
     return y_out
@@ -98,43 +98,55 @@ def open_gripper():
 
 
 def set_angle(self, input_deg):
-    """ Sets motor to specified input angle """
+    """Sets motor to specified input angle."""
     dxl_goal_position = int(map_val(
         input_deg, self.min_angle, self.max_angle, self.MIN_POS_VAL, self.MAX_POS_VAL))
     self.set_position(dxl_goal_position)
 
 
 def get_angle(self):
-    """ Returns present angle """
+    """Returns present angle."""
     dxl_present_position = self.get_position()
     dxl_angle = int(map_val(dxl_present_position, self.MIN_POS_VAL, self.MAX_POS_VAL, self.min_angle, self.max_angle))
     return dxl_angle
 
 
+def wait_for_completion():
+    while waist.is_moving():
+        pass
+    while shoulder1.is_moving():
+        pass
+    while elbow1.is_moving():
+        pass
+    while gripper.is_moving():
+        pass
+
+
 def set_wse(joint_angles):
-    """Set the first 3 joints: waist, shoulder, elbow """
+    """Set the first 3 joints: waist, shoulder, elbow."""
     set_waist(joint_angles[0])
     set_shoulder(joint_angles[1])
     set_elbow(joint_angles[2])
 
 
 def set_wsew(joint_angles):
-    """Set the first 3 joints: waist, shoulder, elbow """
+    """Sets the 4 joints: waist, shoulder, elbow and wrist"""
     set_wse(joint_angles)
     set_wrist(joint_angles[3])
 
 
 def rest_position():
-    """ Rest Position of Phx """
+    """Rest Position of Phx."""
     waist_deg = 0  # between -150 to 150
     shoulder_deg = 75  # between 0 and 180
     elbow_deg = -90  # between 0 and -180
-    wrist_deg = 0
+    wrist_deg = 30
     set_wsew([waist_deg, shoulder_deg, elbow_deg, wrist_deg])
+    open_gripper()
 
 
 def zero_position():
-    """ All joints set to zero degrees to match kin diagram """
+    """All joints set to zero degrees to match kin diagram."""
     waist_deg = 0  # between -150 to 150
     shoulder_deg = 0  # between 0 and 180
     elbow_deg = 0  # between 0 and -180
@@ -150,27 +162,15 @@ def connect():
     all_motors.set_moving_speed(50)
 
 
-def wake_up():
-    # set map angle range : based on kin diagram
-    # all_motors.set_position(512)
-    rest_position()
-    # phx.set_waist(-150)
-    time.sleep(3)
-
-
 def go_to_sleep():
     waist_deg = 0  # between -150 to 150
     shoulder_deg = 170  # between 0 and 180
     elbow_deg = -160  # between 0 and -180
-    wrist_deg = 0
-    all_motors.set_moving_speed(30)
-    shoulder1.set_moving_speed(15)
-    shoulder2.set_moving_speed(15)
+    wrist_deg = 30
+    all_motors.set_moving_speed(20)
     set_wsew([waist_deg, shoulder_deg, elbow_deg, wrist_deg])
-    time.sleep(10)
-
+    wait_for_completion()
     all_motors.disable_torque()
-
     Ax12.close_port()
 
 

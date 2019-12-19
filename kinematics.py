@@ -1,10 +1,9 @@
 import numpy as np
 import phx
 from rbx_toolkit import rbx_toolkit as rbx
-import time
 
 # Link Lengths
-a1 = 9
+a1 = 8.5
 a2 = 15
 a3 = 15
 a4 = 9
@@ -158,7 +157,7 @@ def line_demo():
     ik_matrix = np.rint(ik_matrix)
     print(ik_matrix)
     phx.set_wsew(ik_matrix[0])
-    time.sleep(5)
+    phx.wait_for_completion()
 
     for positions in range(0, inter_size):
         phx.set_wsew(ik_matrix[positions])
