@@ -2,6 +2,7 @@ import numpy as np
 import phx
 from rbx_toolkit import rbx_toolkit as rbx
 
+
 # Link Lengths
 a1 = 8.5
 a2 = 15
@@ -103,8 +104,7 @@ def ik3(xyz_array):
     return joint_angles
 
 
-def ik4(xyz_array, theta0_4):
-    joint_angles = ik3(xyz_array)
+def calculate_theta_4(joint_angles, theta0_4):
     # R0_3
     theta_1 = joint_angles[0]
     theta_2 = joint_angles[1]
@@ -121,12 +121,7 @@ def ik4(xyz_array, theta0_4):
     R3_4 = np.dot(np.transpose(R0_3), R0_4)
     # theta_4
     theta_4 = np.degrees(np.arcsin(R3_4[1, 0]))
-    joint_angles = np.append(joint_angles, theta_4)
-    return joint_angles
-
-
-def sinus_interp(theta_a, theta_b, n):
-    xyz_matrix = np.zeros([n, 3])  # to store results of interpolate
+    return theta_4
 
 
 def interpolate_line(p_start, p_end, inter_size):
@@ -141,13 +136,13 @@ def interpolate_line(p_start, p_end, inter_size):
 def create_joint_matrix(xyz_matrix):
     ik_matrix = np.zeros([xyz_matrix.shape[0], 4])  # to store results of ik3
     for row_num in range(0, xyz_matrix.shape[0]):
-        ik_matrix[row_num] = ik4(xyz_matrix[row_num], 0)
+        ik_matrix[row_num] = calculate_theta_4(xyz_matrix[row_num], 0)
     return ik_matrix
 
 
 def line_demo():
-    p_start = np.array([0, -15, 10])
-    p_end = np.array([0, -15, 30])
+    p_start = np.array([-15, -15,  5])
+    p_end = np.array([20, 0,  15])
 
     inter_size = 60
     r_matrix = interpolate_line(p_start, p_end, inter_size)
@@ -161,6 +156,7 @@ def line_demo():
 
     for positions in range(0, inter_size):
         phx.set_wsew(ik_matrix[positions])
+
 
 
 

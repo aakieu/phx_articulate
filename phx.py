@@ -11,6 +11,10 @@ elbow2 = Ax12(5)
 wrist = Ax12(6)
 gripper = Ax12(7)
 
+default_speed = 75
+max_speed = 1023
+half_speed = 512
+
 
 def map_val(x_in, x_min, x_max, y_min, y_max):
     """Linearly maps x to y; returns corresponding y value"""
@@ -44,7 +48,7 @@ def check_limit(motor_object, deg):
         return deg
 
 
-def init_motor_angles():
+def config_motor_angles():
     set_map_range(waist, -150, 150)
     set_deg_limit(waist, -150, 150)
     set_map_range(shoulder1, -82, 218)
@@ -118,9 +122,9 @@ def wait_for_completion():
         pass
     while elbow1.is_moving():
         pass
-    while gripper.is_moving():
-        pass
     while wrist.is_moving():
+        pass
+    while gripper.is_moving():
         pass
 
 
@@ -145,6 +149,7 @@ def rest_position():
     wrist_deg = 30
     set_wsew([waist_deg, shoulder_deg, elbow_deg, wrist_deg])
     open_gripper()
+    wait_for_completion()
 
 
 def zero_position():
@@ -153,18 +158,18 @@ def zero_position():
     shoulder_deg = 0  # between 0 and 180
     elbow_deg = 0  # between 0 and -180
     wrist_deg = 0
-    set_wsew(waist_deg, shoulder_deg, elbow_deg, wrist_deg)
+    set_wsew([waist_deg, shoulder_deg, elbow_deg, wrist_deg])
 
 
-def connect():
+def turn_on():
     Ax12.open_port()
     Ax12.set_baudrate()
-    init_motor_angles()
-    # set speed
-    all_motors.set_moving_speed(75)
+    config_motor_angles()
+    print('Connection Successful')
+    all_motors.set_moving_speed(default_speed)
 
 
-def go_to_sleep():
+def sleep_position():
     waist_deg = 0  # between -150 to 150
     shoulder_deg = 170  # between 0 and 180
     elbow_deg = -160  # between 0 and -180
@@ -172,6 +177,9 @@ def go_to_sleep():
     all_motors.set_moving_speed(20)
     set_wsew([waist_deg, shoulder_deg, elbow_deg, wrist_deg])
     wait_for_completion()
+
+
+def turn_off():
     all_motors.disable_torque()
     Ax12.close_port()
 
